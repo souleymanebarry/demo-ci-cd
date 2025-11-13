@@ -15,11 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout du code
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # 1️⃣ Récupérer le code
+      - uses: actions/checkout@v4
 
-      # 2️⃣ Setup Java 17 et cache Maven
+      # 2️⃣ Configurer Java 17 et cache Maven
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -35,14 +34,15 @@ jobs:
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
           mvn sonar:sonar \
-            -Dsonar.token=$SONAR_TOKEN \
+            -Dsonar.projectKey=souleymanebarry_demo-ci-cd \
+            -Dsonar.organization=souleymanebarry \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.branch.name=$GITHUB_REF_NAME \
+            -Dsonar.token=$SONAR_TOKEN \
+            -Dsonar.branch.name=master \
             -B
 
-      # 5️⃣ Mettre à jour le graphe des dépendances (version récente)
+      # 5️⃣ Optionnel: mettre à jour le graphe des dépendances
       - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@v2
