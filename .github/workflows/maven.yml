@@ -36,7 +36,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=demo-ci-cd \
+            -Dsonar.projectKey=souleymanebarry_demo-ci-cd \
             -Dsonar.organization=souleymanebarry \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
