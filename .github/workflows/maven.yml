@@ -2,9 +2,9 @@ name: Develop Process build test flow
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 permissions:
   contents: write
@@ -15,8 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Récupérer le code
       - uses: actions/checkout@v4
 
+      # 2️⃣ Configurer Java 17 et cache Maven
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -24,20 +26,23 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # 3️⃣ Build Maven
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn clean install -B
 
-      # Analyse SonarCloud
+      # 4️⃣ Analyse SonarCloud
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./mvnw sonar:sonar \
+          mvn sonar:sonar \
             -Dsonar.projectKey=demo-ci-cd \
             -Dsonar.organization=souleymanebarry \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=$SONAR_TOKEN
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.branch.name=master \
+            -B
 
-      # Optional: Uploads the full dependency graph to GitHub
+      # 5️⃣ Optionnel: mettre à jour le graphe des dépendances
       - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
